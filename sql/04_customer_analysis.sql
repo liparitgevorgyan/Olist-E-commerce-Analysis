@@ -109,12 +109,12 @@ SELECT
         WHERE count_purchases > 1
     ) AS repeat_customers,
 
-    COUNT(*) AS all_customers,
+    COUNT(*) FILTER (WHERE count_purchases > 0) AS all_customers,
 
     ROUND(
         COUNT(*) FILTER (
             WHERE count_purchases > 1
-        ) / COUNT(*)::decimal * 100,
+        ) / COUNT(*) FILTER (WHERE count_purchases > 0)::decimal * 100,
         2
     ) AS repeat_purchase_pct
 FROM (
@@ -127,7 +127,6 @@ FROM (
         AND o.status = 'delivered'
     GROUP BY c.user_unq_id
 ) t;
-
 
 -- 7. Monthly number of active customers
 --
